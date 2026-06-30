@@ -1,0 +1,31 @@
+name: Coleta de Dados Rastreamento
+
+on:
+  schedule:
+    - cron: '*/8 * * * *'  # A cada 8 minutos
+  workflow_dispatch:  # Permite executar manualmente
+
+jobs:
+  coleta:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v4
+    
+    - name: Configurar Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    
+    - name: Instalar dependências
+      run: pip install -r requirements.txt
+    
+    - name: Executar script
+      env:
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        API_TOKEN: ${{ secrets.API_TOKEN }}
+        API_USER: ${{ secrets.API_USER }}
+        API_PASS: ${{ secrets.API_PASS }}
+      run: python main.py
